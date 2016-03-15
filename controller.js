@@ -4,13 +4,35 @@ var controller = {
     view.init();
   },
 
+  keyboard: function(){
+    var bl = block.movingBlock;
+    if (key.isPressed('left')){
+      console.log("turning left");
+      bl.dir = "cclockwise";
+      bl.rotate(bl.dir);
+    }
+    else if (key.isPressed('right')){
+      console.log("turning right");
+      bl.dir = "clockwise";
+      bl.rotate(bl.dir);
+    }
+  },
+
   displayBlocks: function(){
+
     $.each(block.boardBlocks, function(index, block){
       view.renderBlock(block);
     });
+
+    if(block.movingBlock !== undefined){
+      $.each(block.movingBlock.blocks, function(index, block){
+        view.renderBlock(block);
+      });
+    }
   },
 
   render: function(){
+    controller.keyboard();
     view.clearCanvas(view.canvas());
     controller.ticBlock();
     controller.displayBlocks();
@@ -19,15 +41,15 @@ var controller = {
   update: function(){
     setInterval(function(){
       controller.render();
-    }, 500);
+    }, 30);
   },
 
   ticBlock: function() {
-    $.each(block.boardBlocks, function(index, block){
+    setTimeout(function(){$.each(block.boardBlocks, function(index, block){
       if (!block.placed) {
         block.coord.y += block.size;
       }
-    });
+    });}, 500);
   },
 
 };

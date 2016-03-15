@@ -1,7 +1,7 @@
 var block = block || {};
 
 block.boardBlocks = []; //For placed blocks
-block.movingBlocks = [];
+block.movingBlock = undefined;
 ////////////////////////////////////////////////////////////////////////////////
 block.BlockConstructor = function(x, y) {
   this.coord = {
@@ -12,19 +12,25 @@ block.BlockConstructor = function(x, y) {
   //this.pivotIndex = 0;
   this.size = config.size;
   this.placed = false;
-
+  this.dir = "";
+  this.currentOrient = 0;
+  var that = this;
   this.nextOrientation = function(dir) {
     if (dir === "clockwise") {
-      return this.orient + 1 % 4;
+      that.currentOrient = that.currentOrient >= 4 ? 1 : that.currentOrient + 1;
     } else {
-      return this.orient === 0 ? 4 : this.orient - 1;
+      that.currentOrient = that.currentOrient <= 1 ? 4 : that.currentOrient - 1;
     }
+    return that.currentOrient;
   };
 
   this.rotate = function(dir) {
     var currentBlock;
-    for (var i = 0; i < this.blocks.length; i++) {
-      currentBlock = this.blocks[i] += this.orient(dir)[i];
+    for (var i = 0; i < that.blocks.length; i++) {
+      currentBlock = that.blocks[i];
+      // console.log(this.nextOrientation(dir));
+      currentBlock.coord.x += that.orient(that.currentOrient)[0];
+      currentBlock.coord.y += that.orient(that.currentOrient)[1];
     }
   };
 };
@@ -41,7 +47,7 @@ block.LLeftShapeConstructor = function(x, y) {
 
   this.fillBlock = function() {
     for (var i = 0; i < this.rotate0.length; i++) {
-      this.block.push(new BlockConstructor(this.rotate0[i][0] * this.size, this.rotate0[i][1] * this.size));
+      this.blocks.push(new block.BlockConstructor(this.rotate0[i][0] * this.size, this.rotate0[i][1] * this.size));
     }
   };
 
@@ -142,5 +148,5 @@ var board = {
 };
 
 var config = {
-  blockSize: 30,
+  size: 30,
 };
