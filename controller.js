@@ -7,12 +7,10 @@ var controller = {
   keyboard: function(){
     var bl = block.movingBlock;
     if (key.isPressed('left')){
-      console.log("turning left");
       bl.dir = "cclockwise";
       bl.rotate(bl.dir);
     }
     else if (key.isPressed('right')){
-      console.log("turning right");
       bl.dir = "clockwise";
       bl.rotate(bl.dir);
     }
@@ -41,7 +39,7 @@ var controller = {
   update: function(){
     setInterval(function(){
       controller.render();
-    }, 30);
+    }, 100);
   },
 
   ticBlock: function() {

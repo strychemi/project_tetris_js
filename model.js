@@ -26,11 +26,12 @@ block.BlockConstructor = function(x, y) {
 
   this.rotate = function(dir) {
     var currentBlock;
+    var nextOrient = that.nextOrientation(that.dir);
     for (var i = 0; i < that.blocks.length; i++) {
       currentBlock = that.blocks[i];
-      // console.log(this.nextOrientation(dir));
-      currentBlock.coord.x += that.orient(that.currentOrient)[0];
-      currentBlock.coord.y += that.orient(that.currentOrient)[1];
+      currentBlock.coord.x += that.orient(nextOrient)[i][0] * that.size;
+      currentBlock.coord.y += that.orient(nextOrient)[i][1] * that.size;
+      console.log(currentBlock.coord.x, currentBlock.coord.y);
     }
   };
 };
@@ -38,16 +39,28 @@ block.BlockConstructor = function(x, y) {
 
 block.LLeftShapeConstructor = function(x, y) {
   block.BlockConstructor.call(this, x, y);
-  //this.rotation = rotation;
-  this.rotate0 = [[0,0],[0,1],[0,2],[1,2]];
-  this.rotate90 = [[2, 1],[0,1],[-1,-1],[-1,2]];
-  this.rotate180 = [[0,2],[0,1],[0,0],[-1,0]];
-  this.rotate270 = [[-1,1],[0,1],[1,1],[1,0]];
+  // this.rotate0 = [[0,0],[0,1],[0,2],[1,2]];
+  // this.rotate90 = [[2, 1],[0,1],[-1,-1],[-1,2]];
+  // this.rotate180 = [[0,2],[0,1],[0,0],[-1,0]];
+  // this.rotate270 = [[-1,1],[0,1],[1,1],[1,0]];
+  this.rotate0 = [[1,1], [0,0], [-1,-1], [-2, 0]];
+  this.rotate90 = [[-1,1], [0,0], [1, -1], [0, -2]];
+  this.rotate180 = [[-1,-1], [0,0], [1, 1], [2, 0]];
+  this.rotate270 = [[1,-1], [0,0], [-1, 1], [0, 2]];
+
   this.pivotIndex = 1;
 
   this.fillBlock = function() {
-    for (var i = 0; i < this.rotate0.length; i++) {
-      this.blocks.push(new block.BlockConstructor(this.rotate0[i][0] * this.size, this.rotate0[i][1] * this.size));
+    var startingShape = [[0,0],[0,1],[0,2],[1,2]];
+    var startPos = [5, 5];
+
+    for (var j = 0; j < startingShape.length; j++) {
+      startingShape[j][0] += startPos[0];
+      startingShape[j][1] += startPos[1];
+    }
+
+    for (var i = 0; i < startingShape.length; i++) {
+      this.blocks.push(new block.BlockConstructor(startingShape[i][0] * this.size, startingShape[i][1] * this.size));
     }
   };
 
