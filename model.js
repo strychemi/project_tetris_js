@@ -9,21 +9,42 @@ block.BlockConstructor = function(x, y) {
     y: y,
   };
   this.blocks = []; //while moving
-  this.pivotIndex = 0;
+  //this.pivotIndex = 0;
   this.size = config.size;
   this.placed = false;
+
+  this.nextOrientation = function(dir) {
+    if (dir === "clockwise") {
+      return this.orient + 1 % 4;
+    } else {
+      return this.orient === 0 ? 4 : this.orient - 1;
+    }
+  };
+
+  this.rotate = function(dir) {
+    var currentBlock;
+    for (var i = 0; i < this.blocks.length; i++) {
+      currentBlock = this.blocks[i] += this.orient(dir)[i];
+    }
+  };
 };
 ////////////////////////////////////////////////////////////////////////////////
 
-block.LLeftShapeConstructor = function() {
-  block.BlockConstructor.call(this, 0, 0);
+block.LLeftShapeConstructor = function(x, y) {
+  block.BlockConstructor.call(this, x, y);
   //this.rotation = rotation;
   this.rotate0 = [[0,0],[0,1],[0,2],[1,2]];
   this.rotate90 = [[2, 1],[0,1],[-1,-1],[-1,2]];
   this.rotate180 = [[0,2],[0,1],[0,0],[-1,0]];
   this.rotate270 = [[-1,1],[0,1],[1,1],[1,0]];
   this.pivotIndex = 1;
-  this.prototype = block.BlockConstructor;
+
+  this.fillBlock = function() {
+    for (var i = 0; i < this.rotate0.length; i++) {
+      this.block.push(new BlockConstructor(this.rotate0[i][0] * this.size, this.rotate0[i][1] * this.size));
+    }
+  };
+
   var that = this;
   this.orient = function(rotate){
     switch(rotate){
@@ -52,7 +73,6 @@ block.LRightShapeConstructor = function() {
   //this.rotation = rotation;
   this.rotate90 = [];
   this.rotate0 = [];
-  this.prototype = block.BlockConstructor;
 };
 
 block.LRightShapeConstructor.prototype = Object.create(block.BlockConstructor.prototype);
@@ -64,7 +84,6 @@ block.LineShapeConstructor = function() {
   //this.rotation = rotation;
   this.rotate90 = [];
   this.rotate0 = [];
-  this.prototype = block.BlockConstructor;
 };
 
 block.LineShapeConstructor.prototype = Object.create(block.BlockConstructor.prototype);
@@ -77,7 +96,6 @@ block.SquareShapeConstructor = function() {
   //this.rotation = rotation;
   this.rotate90 = [];
   this.rotate0 = [];
-  this.prototype = block.BlockConstructor;
 };
 
 block.SquareShapeConstructor.prototype = Object.create(block.BlockConstructor.prototype);
@@ -90,7 +108,6 @@ block.ZLeftShapeConstructor = function() {
   //this.rotation = rotation;
   this.rotate90 = [];
   this.rotate0 = [];
-  this.prototype = block.BlockConstructor;
 };
 
 block.ZLeftShapeConstructor.prototype = Object.create(block.BlockConstructor.prototype);
@@ -103,7 +120,6 @@ block.ZRightShapeConstructor = function() {
   //this.rotation = rotation;
   this.rotate90 = [];
   this.rotate0 = [];
-  this.prototype = block.BlockConstructor;
 };
 
 block.ZRightShapeConstructor.prototype = Object.create(block.BlockConstructor.prototype);
@@ -115,7 +131,6 @@ block.TShapeConstructor = function() {
   //this.rotation = rotation;
   this.rotate90 = [];
   this.rotate0 = [];
-  this.prototype = block.BlockConstructor;
 };
 
 block.TShapeConstructor.prototype = Object.create(block.BlockConstructor.prototype);
