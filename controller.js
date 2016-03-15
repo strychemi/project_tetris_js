@@ -8,20 +8,26 @@ var controller = {
     $.each(block.boardBlocks, function(index, block){
       view.renderBlock(block);
     });
-    // for(var i=0; i < block.boardBlocks.length; i++){
-    //   console.log(block.boardBlocks[i]);
-    // }
   },
 
   render: function(){
+    view.clearCanvas(view.canvas());
+    controller.ticBlock();
     controller.displayBlocks();
   },
 
   update: function(){
     setInterval(function(){
-      console.log("called");
       controller.render();
     }, 500);
+  },
+
+  ticBlock: function() {
+    $.each(block.boardBlocks, function(index, block){
+      if (!block.placed) {
+        block.coord.y += block.size;
+      }
+    });
   },
 
 };

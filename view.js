@@ -5,11 +5,10 @@ var view = {
   },
 
   renderBlock: function(block){
-    console.log(block);
     var c = view.canvas();
     c.beginPath();
     c.fillStyle = 'green';
-    c.fillRect(block.coord.x, block.coord.y, block.coord.size, block.size);
+    c.fillRect(block.coord.x, block.coord.y, block.size, block.size);
   },
 
   canvas: function(){
