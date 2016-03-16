@@ -1,6 +1,7 @@
 var gameModule = (function() {
-  var INTERVAL = 40; //40 ~ 25 FPS, 30 ~ 30 FPS, 15 ~ 60 FPS
+  var INTERVAL = 60; //40 ~ 25 FPS, 30 ~ 30 FPS, 15 ~ 60 FPS
   var halfSecond = 1000/INTERVAL/2;
+  //var halfSecond = 1;
   var score = 0;
 
   var init = function() {
@@ -26,18 +27,36 @@ var gameModule = (function() {
       newPos;
     if (key.isPressed("up")) {
       newPos = currentPiece.rotate("CLOCKWISE");
-      tetrisModule.checkCollisions(newPos);
+      if (!tetrisModule.checkCollisions(newPos)) {
+        currentPiece.doRotate("CLOCKWISE");
+      }
     } else if (key.isPressed("down")) {
       newPos = currentPiece.rotate("COUNTERCLOCKWISE");
-      tetrisModule.checkCollisions(newPos);
+      if (!tetrisModule.checkCollisions(newPos)) {
+        currentPiece.doRotate("COUNTERCLOCKWISE");
+      }
     }
 
     if (key.isPressed("left")) {
       newPos = currentPiece.translate("left");
-      tetrisModule.checkCollisions(newPos);
+      if (!tetrisModule.checkCollisions(newPos)) {
+        currentPiece.x -= 1;
+      }
     } else if (key.isPressed("right")) {
       newPos = currentPiece.translate("right");
-      tetrisModule.checkCollisions(newPos);
+      if (!tetrisModule.checkCollisions(newPos)) {
+        currentPiece.x += 1;
+      }
+    }
+
+    if (key.isPressed("space")) {
+      newPos = currentPiece.translate("down");
+      if (!tetrisModule.checkCollisions(newPos)) {
+        currentPiece.y += 1;
+      } else {
+        currentPiece.placed = true;
+        addPieceToBoard(currentPiece);
+      }
     }
   };
 

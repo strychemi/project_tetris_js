@@ -1,8 +1,8 @@
 var tetrisModule = (function() {
   // Initialize board
   var board = Array(10);
-  for(var b in board) {
-    board[b] = new Array(20);
+  for(var y = 0; y < board.length; y++) {
+    board[y] = new Array(20);
   }
 
   // Keeps track of pieces
@@ -13,7 +13,7 @@ var tetrisModule = (function() {
   };
 
   var generatePiece = function() {
-    if (!this.getCurrentPiece()) pieces.push(new pieceModule.Piece());
+    if (!getCurrentPiece()) pieces.push(new pieceModule.Piece());
   };
 
   var getCurrentPiece = function() {
@@ -24,6 +24,15 @@ var tetrisModule = (function() {
 
   var getAllPieces = function() {
     return pieces;
+  };
+
+  var addPieceToBoard = function(piece) {
+    var assembly = piece.boardPosition(),
+      max = assembly.length;
+    // Iterate through piece's assembly
+    for (var i = 0; i < max; i++) {
+      board[assembly[i][0]][assembly[i][1]] = 1;
+    }
   };
 
   var ticPiece = function() {
@@ -40,6 +49,7 @@ var tetrisModule = (function() {
       }
       if (checkCollisions(position)) {
         currentPiece.placed = true;
+        addPieceToBoard(currentPiece);
       } else {
         currentPiece.y += 1;
       }
@@ -48,12 +58,36 @@ var tetrisModule = (function() {
 
   var checkCollisions = function(newPos) {
     var max = newPos.length;
-    // Ground collision
     for (var i = 0; i < max; i++) {
-      if (newPos[i][1] >= 20 ) return true;
+      // Ground collision
+      if (newPos[i][1] > 19 ) return true;
+      // Left and Right board boundary collision
+      for (var j = 0; j < max; j++) {
+        if (newPos[i][0] < 0 || newPos[i][0] > 9) return true;
+      }
+      // Check newPos against board
+      if (board[newPos[i][0]][newPos[i][1]] === 1) return true;
     }
-    // Other piece Collisions
     return false;
+  };
+
+  var checkRows = function() {
+    var rowCounter = 0, allPieces = pieces;
+    for (var i = 0; i < 20; i++) {
+      for (var j = 0; j < 10; j++) {
+        if (board[j][i] === 1) rowCounter++;
+        if (rowCounter === 10) {
+          for (var k = 0; k < 10; k++) {
+            board[k][i] = undefined;
+          }
+        }
+      }
+    }
+
+    for (i = 0; i < pieces.length; i++) {
+      
+    }
+
   };
 
   return {

@@ -53,13 +53,16 @@ var pieceModule = (function() {
     // returns a new potential position of assembly blocks
     this.translate = function(dir) {
       var max = this.assembly.length,
-        newPos = [];
+        newPos = [],
+        currentX, currentY;
 
       for (var i = 0; i < max; i++) {
+        currentX = this.assembly[i][0] + this.x;
+        currentY = this.assembly[i][1] + this.y;
         if (dir === "left") {
-          newPos.push([this.assembly[i][0] - 1, this.assembly[i][1]]);
+          newPos.push([currentX - 1, currentY]);
         } else if (dir === "right") {
-          newPos.push([this.assembly[i][0] + 1, this.assembly[i][1]]);
+          newPos.push([currentX + 1, currentY]);
         }
       }
       return newPos;
@@ -69,13 +72,16 @@ var pieceModule = (function() {
     // returns a new potential position of assembly blocks
     this.rotate = function(dir) {
       var max = this.assembly.length,
-        pivot = this.assembly[1],
+        pivot = [this.assembly[1][0] + this.x, this.assembly[1][1] + this.y],
         newPos = [],
         dx, dy, x0, y0, newX, newY;
       for (var i = 0; i < max; i++) {
+        currentX = this.assembly[i][0] + this.x;
+        currentY = this.assembly[i][1] + this.y;
+
         // Reorient assembly blocks relative to by subtracting pivot point
-        x0 = this.assembly[i][0] - pivot[0];
-        y0 = this.assembly[i][1] - pivot[1];
+        x0 = currentX - pivot[0];
+        y0 = currentY - pivot[1];
         // Rotate about pivot point
         if (dir === "CLOCKWISE") {
           dx = -y0;
@@ -90,6 +96,34 @@ var pieceModule = (function() {
         newPos.push([newX, newY]);
       }
       return newPos;
+    };
+
+    this.doRotate = function(dir) {
+      var max = this.assembly.length,
+        pivot = [this.assembly[1][0], this.assembly[1][1]],
+        newPos = [],
+        dx, dy, x0, y0, newX, newY;
+      for (var i = 0; i < max; i++) {
+        currentX = this.assembly[i][0];
+        currentY = this.assembly[i][1];
+
+        // Reorient assembly blocks relative to by subtracting pivot point
+        x0 = currentX - pivot[0];
+        y0 = currentY - pivot[1];
+        // Rotate about pivot point
+        if (dir === "CLOCKWISE") {
+          dx = -y0;
+          dy = x0;
+        } else if (dir === "COUNTERCLOCKWISE") {
+          dx = y0;
+          dy = -x0;
+        }
+        // Add pivot point to regain proper location on grid after rotation
+        newX = dx + pivot[0];
+        newY = dy + pivot[1];
+        newPos.push([newX, newY]);
+      }
+      this.assembly = newPos;
     };
 
   }
