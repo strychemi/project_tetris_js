@@ -8,8 +8,35 @@ var tetrisModule = (function() {
   // Keeps track of pieces
   var pieces = [];
 
+  var getBoard = function() {
+    return board;
+  };
 
   var generatePiece = function() {
-    pieces.push(new pieceModule.Piece());
+    if (!this.getCurrentPiece()) pieces.push(new pieceModule.Piece());
+  };
+
+  var getCurrentPiece = function() {
+    for (var p in pieces) {
+      if (!pieces[p].placed) return pieces[p];
+    }
+  };
+
+  var getAllPieces = function() {
+    return pieces;
+  };
+
+  var ticPiece = function() {
+    var currentPiece;
+    currentPiece = getCurrentPiece();
+    if (!currentPiece.placed) currentPiece.y += 1;
+  };
+
+  return {
+    getBoard: getBoard,
+    generatePiece: generatePiece,
+    getCurrentPiece: getCurrentPiece,
+    getAllPieces: getAllPieces,
+    ticPiece: ticPiece
   };
 })();
