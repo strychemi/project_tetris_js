@@ -36,7 +36,21 @@ var pieceModule = (function() {
     this.color = tetriminoColor[this.type];
     this.placed = false;
 
+    // Returns positions of assembly blocks
+    this.boardPosition = function() {
+      var max = this.assembly.length,
+        position = [],
+        currentX, currentY;
+      for (var i = 0; i < max; i++) {
+        currentX = this.assembly[i][0] + this.x;
+        currentY = this.assembly[i][1] + this.y;
+        position.push( [currentX, currentY] );
+      }
+      return position;
+    };
+
     // Moves the tetrimino piece left or right
+    // returns a new potential position of assembly blocks
     this.translate = function(dir) {
       var max = this.assembly.length,
         newPos = [];
@@ -48,38 +62,34 @@ var pieceModule = (function() {
           newPos.push([this.assembly[i][0] + 1, this.assembly[i][1]]);
         }
       }
-      this.assembly = newPos;
+      return newPos;
     };
 
     // Rotates the tetrimino piece clockwise or counter-clockwise
+    // returns a new potential position of assembly blocks
     this.rotate = function(dir) {
-      if (this.type === "o") return undefined;
-      
       var max = this.assembly.length,
         pivot = this.assembly[1],
         newPos = [],
-        dx, dy, x, y, newX, newY;
-
+        dx, dy, x0, y0, newX, newY;
       for (var i = 0; i < max; i++) {
         // Reorient assembly blocks relative to by subtracting pivot point
-        x = this.assembly[i][0] - pivot[0];
-        y = this.assembly[i][1] - pivot[1];
-
+        x0 = this.assembly[i][0] - pivot[0];
+        y0 = this.assembly[i][1] - pivot[1];
         // Rotate about pivot point
         if (dir === "CLOCKWISE") {
-          dx = -y;
-          dy = x;
+          dx = -y0;
+          dy = x0;
         } else if (dir === "COUNTERCLOCKWISE") {
-          dx = y;
-          dy = -x;
+          dx = y0;
+          dy = -x0;
         }
-
         // Add pivot point to regain proper location on grid after rotation
         newX = dx + pivot[0];
         newY = dy + pivot[1];
         newPos.push([newX, newY]);
       }
-      this.assembly = newPos;
+      return newPos;
     };
 
   }

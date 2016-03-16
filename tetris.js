@@ -27,9 +27,33 @@ var tetrisModule = (function() {
   };
 
   var ticPiece = function() {
-    var currentPiece;
-    currentPiece = getCurrentPiece();
-    if (!currentPiece.placed) currentPiece.y += 1;
+    var currentPiece = getCurrentPiece(),
+      max = currentPiece.assembly.length,
+      position = [],
+      currentX, currentY;
+    if (!currentPiece.placed) {
+      newY = currentPiece.y + 1;
+      for (var i = 0; i < max; i++) {
+        currentX = currentPiece.assembly[i][0] + currentPiece.x;
+        currentY = currentPiece.assembly[i][1] + currentPiece.y + 1;
+        position.push( [currentX, currentY] );
+      }
+      if (checkCollisions(position)) {
+        currentPiece.placed = true;
+      } else {
+        currentPiece.y += 1;
+      }
+    }
+  };
+
+  var checkCollisions = function(newPos) {
+    var max = newPos.length;
+    // Ground collision
+    for (var i = 0; i < max; i++) {
+      if (newPos[i][1] >= 20 ) return true;
+    }
+    // Other piece Collisions
+    return false;
   };
 
   return {
@@ -37,6 +61,7 @@ var tetrisModule = (function() {
     generatePiece: generatePiece,
     getCurrentPiece: getCurrentPiece,
     getAllPieces: getAllPieces,
-    ticPiece: ticPiece
+    ticPiece: ticPiece,
+    checkCollisions: checkCollisions
   };
 })();
